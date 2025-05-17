@@ -1,64 +1,84 @@
-# Hand Gesture Recognition Web Application
+to get the initial app runnning (dataCollection.py and test.py) 
+Do the following for Mac OS 
 
-A web-based application for real-time hand gesture recognition using webcam input. The application uses computer vision and machine learning to detect hand gestures and classify them.
+1. Install Homebrew & Miniforge3
+Install Homebrew:
 
-## Features
+bash
+Copy
+Edit
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+Homebrew is the preferred way to install Miniforge for arm64 conda 
+Roboflow Blog
+.
 
-- Real-time hand detection using a webcam
-- Classification of hand gestures into predefined categories (A, B, C)
-- Interactive web interface displaying prediction results
-- Visual feedback for detected gestures
+Install Miniforge3:
 
-## Requirements
+brew install miniforge
+Miniforge3 from conda-forge has long-standing arm64 support, unlike standard Anaconda 
+Medium
+.
 
-- Python 3.6+
-- OpenCV
-- cvzone
-- TensorFlow/Keras
-- Flask
-- A webcam
+Initialize Conda for your shell:
 
-## Installation
+conda init zsh
+Restart your terminal or source ~/.zshrc to load conda commands. 
+Roboflow Blog
 
-1. Clone this repository:
-```
-git clone https://github.com/yourusername/hand-gesture-recognition.git
-cd hand-gesture-recognition
-```
+2. Create & Activate Conda Environment
+Create an environment with Python 3.10:
 
-2. Install the required packages:
-```
-pip install opencv-python cvzone tensorflow flask numpy
-```
+conda create -n handgestures python=3.10
+Python 3.12+ isn’t yet fully supported by MediaPipe on Silicon 
+Stack Overflow
+.
 
-## Usage
+Activate it:
 
-1. Run the Flask application:
-```
-python app.py
-```
+conda activate handgestures
+3. Install OpenCV
 
-2. Open your web browser and navigate to:
-```
-http://127.0.0.1:5000/
-```
+conda install -c conda-forge opencv
+OpenCV 4.x is available as a prebuilt package on conda-forge for arm64 
+Anaconda
+.
 
-3. Show hand gestures to your webcam and see the predictions in real-time.
+4. Install MediaPipe for Apple Silicon
 
-## Project Structure
+pip install mediapipe-silicon
+pip install "protobuf>=3.11,<4"
+The mediapipe-silicon wheel is a drop-in replacement optimized for M1/M2 
+GitHub
+.
 
-- `app.py`: Flask web application
-- `templates/index.html`: Web interface
-- `Model/`: Contains the trained model files
-- `Data/`: Training and test image data
-- `dataCollection.py`: Script for collecting training data
-- `test.py`: Script for testing the model locally
+5. Install TensorFlow-macOS & TensorFlow-Metal
+Add Apple channel:
 
-## License
+conda install -c apple tensorflow-deps
+Installs low-level deps for TensorFlow on Apple Silicon 
+Apple Developer
+.
 
-[MIT License](LICENSE)
+Install TensorFlow runtime:
 
-## Acknowledgments
 
-- Hand tracking is implemented using the cvzone library
-- The gesture classification model is trained using TensorFlow/Keras
+python -m pip install tensorflow-macos tensorflow-metal
+This gives you GPU-accelerated performance via Apple’s Metal plugin 
+Medium
+.
+
+6. Install CVZone
+
+pip install cvzone
+CVZone wraps OpenCV and MediaPipe under the hood for easy hand-tracking and more 
+GitHub
+.
+
+7. Verify Installation
+Run a quick Python check:
+
+python
+import cv2; print("OpenCV:", cv2.__version__)
+import mediapipe; print("MediaPipe:", mediapipe.__version__)
+import tensorflow as tf; print("TensorFlow:", tf.__version__)
+import cvzone; print("CVZone:", cvzone.__version__)
