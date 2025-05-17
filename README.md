@@ -1,3 +1,74 @@
+TRY THIS SHELL SCRIPT FIRST
+#!/usr/bin/env bash
+# setup_handgestures.sh
+# Creates a Conda env named "handgestures" with all dependencies for
+# hand-crop data collection and real-time gesture classification.
+
+set -euo pipefail
+
+ENV_NAME="handgestures"
+PYTHON_VERSION="3.10"
+
+echo
+echo "🛠  Creating Conda environment '${ENV_NAME}' with Python ${PYTHON_VERSION}..."
+conda create -n "${ENV_NAME}" python=${PYTHON_VERSION} -y
+
+echo
+echo "🔄  Activating environment..."
+# shellcheck disable=SC1091
+source "$(conda info --base)/etc/profile.d/conda.sh"
+conda activate "${ENV_NAME}"
+
+echo
+echo "📦  Installing OpenCV from conda-forge..."
+conda install -c conda-forge opencv -y
+
+echo
+echo "🔧  Installing MediaPipe (Apple Silicon wheel)..."
+pip install mediapipe-silicon
+
+echo
+echo "⚙️  Installing TensorFlow for macOS + Metal acceleration..."
+# Install low-level deps via apple channel
+conda install -c apple tensorflow-deps -y
+# Then install the runtime
+pip install tensorflow-macos tensorflow-metal
+
+echo
+echo "🧰  Installing CVZone (wrappers for OpenCV+MediaPipe)..."
+pip install cvzone
+
+echo
+echo "✅  All dependencies installed successfully!"
+echo
+echo "Next steps:"
+echo "1. Activate the env:   conda activate ${ENV_NAME}"
+echo "2. Verify imports:     python - <<EOF"
+echo "import cv2, mediapipe, tensorflow, cvzone"
+echo "print('OK!')"
+echo "EOF"
+echo "3. Place your model files under ./Model (keras_model.h5 + labels.txt)"
+echo "4. Run your scripts:   python collect_data.py"
+echo "                      python gesture_classifier.py"
+echo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 to get the initial app runnning (dataCollection.py and test.py) 
 Do the following for Mac OS 
 
