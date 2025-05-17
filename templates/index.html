@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hand Gesture Recognition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        #videoElement {
+            width: 100%;
+            max-width: 640px;
+            border: 3px solid #333;
+            border-radius: 5px;
+        }
+        .result-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9e9e9;
+            border-radius: 5px;
+        }
+        #predictionResult {
+            font-size: 24px;
+            font-weight: bold;
+            color: #9c27b0;
+        }
+        #confidenceResult {
+            font-size: 18px;
+            color: #555;
+        }
+        .gesture {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 25px;
+            font-size: 18px;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .gesture.active {
+            background-color: #9c27b0;
+            color: white;
+            border-color: #9c27b0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hand Gesture Recognition</h1>
+        
+        <div>
+            <img id="videoElement" src="{{ url_for('video_feed') }}" alt="Video stream">
+        </div>
+        
+        <div class="result-container">
+            <h2>Current Gesture:</h2>
+            <div id="predictionResult">None</div>
+            <div id="confidenceResult"></div>
+        </div>
+        
+        <div class="gestures">
+            <div class="gesture" id="gesture-A">A</div>
+            <div class="gesture" id="gesture-B">B</div>
+            <div class="gesture" id="gesture-C">C</div>
+        </div>
+    </div>
+
+    <script>
+        // Function to get the current prediction
+        function updatePrediction() {
+            fetch('/get_prediction')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('predictionResult').textContent = data.prediction;
+                    document.getElementById('confidenceResult').textContent = 
+                        `Confidence: ${(data.confidence * 100).toFixed(2)}%`;
+                    
+                    // Update active gesture
+                    document.querySelectorAll('.gesture').forEach(el => {
+                        el.classList.remove('active');
+                    });
+                    
+                    if (data.prediction !== "None") {
+                        const gestureElement = document.getElementById(`gesture-${data.prediction}`);
+                        if (gestureElement) {
+                            gestureElement.classList.add('active');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching prediction:', error);
+                });
+        }
+
+        // Update every 100ms
+        setInterval(updatePrediction, 100);
+
+        // Clean up when page is unloaded
+        window.addEventListener('beforeunload', function() {
+            fetch('/shutdown', { method: 'POST' });
+        });
+    </script>
+</body>
+</html>

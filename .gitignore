@@ -1,0 +1,35 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local configuration
+.env
+.env.local
+
+# Flask stuff
+instance/
+.webassets-cache
+
+# Claude Code settings
+.claude/
+
+# OS specific files
+.DS_Store
+Thumbs.db
